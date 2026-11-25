@@ -9,17 +9,18 @@ const CONFIG_PATH = path.join(PLUGIN_DIR, 'team-config.json');
 const MCP_CONFIG_PATH = path.join(PLUGIN_DIR, 'mcp_config.json');
 
 const DEFAULT_STATE = {
-  version: '2.0.0',
+  version: '2.1.0',
   members: [
-    { id: 'an', name: 'An', title: 'Tech Lead', agent_type: 'coordinator', default_tier: 'inherit', mode: 'coordinator', color: '#0ea5e9', specialty: 'Điều phối, phân rã yêu cầu & tổng hợp kết quả', enabled: true },
-    { id: 'minh', name: 'Minh', title: 'Architect', agent_type: 'team-architect', default_tier: 'pro', mode: 'read-only', color: '#8b5cf6', specialty: 'Thiết kế kiến trúc, hợp đồng API, đánh giá trade-offs', enabled: true },
-    { id: 'tin', name: 'Tin', title: 'Scout', agent_type: 'team-scout', default_tier: 'flash_lite', mode: 'read-only', color: '#14b8a6', specialty: 'Quét codebase rộng, đọc log dài, khoanh vùng file & dòng', enabled: true },
-    { id: 'long', name: 'Long', title: 'Backend', agent_type: 'team-backend', default_tier: 'pro', mode: 'read-write', color: '#3b82f6', specialty: 'API, Database, Worker, Concurrency, Media/System', enabled: true },
-    { id: 'linh', name: 'Linh', title: 'Frontend', agent_type: 'team-frontend', default_tier: 'flash', mode: 'read-write', color: '#ec4899', specialty: 'UX/UI hiện đại, Responsive Desktop & Mobile, Component DRY', enabled: true },
-    { id: 'khanh', name: 'Khanh', title: 'QA', agent_type: 'team-qa', default_tier: 'flash', mode: 'read-write', color: '#10b981', specialty: 'Automated test, kiểm tra build, vệ sinh thư mục test', enabled: true },
-    { id: 'hung', name: 'Hung', title: 'Reviewer', agent_type: 'team-reviewer', default_tier: 'pro', mode: 'read-only', color: '#f59e0b', specialty: 'Review diff độc lập, soi race condition, leak & bảo mật', enabled: true }
+    { id: 'an', name: 'An', title: 'Tech Lead', agent_type: 'coordinator', default_tier: 'inherit', mode: 'coordinator', color: '#0ea5e9', specialty: 'Điều phối, tổng hợp tranh biện ADR/RFC & chốt quyết định', books: ['Pragmatic Programmer', 'SE at Google'], cross_skills: 'Cân bằng KISS/YAGNI & rủi ro', enabled: true },
+    { id: 'minh', name: 'Minh', title: 'Architect', agent_type: 'team-architect', default_tier: 'pro', mode: 'read-only', color: '#8b5cf6', specialty: 'Kiến trúc nền móng, Clean Architecture & Trade-off ADR', books: ['Clean Architecture', 'DDIA', 'Hard Parts', 'DDD'], cross_skills: 'Phản biện Coupling & Parity', enabled: true },
+    { id: 'tin', name: 'Tin', title: 'Scout', agent_type: 'team-scout', default_tier: 'flash_lite', mode: 'read-only', color: '#14b8a6', specialty: 'Map-First Discovery, đọc log dài & blast-radius xuyên tầng', books: ['Debugging (9 Rules)', 'Pragmatic Programmer'], cross_skills: 'Phản biện bằng file:line thật', enabled: true },
+    { id: 'long', name: 'Long', title: 'Backend', agent_type: 'team-backend', default_tier: 'pro', mode: 'read-write', color: '#3b82f6', specialty: 'API, DB/Migration, Concurrency, SRE & Dual-Target (.exe/Cloud)', books: ['DDIA', 'Release It!', 'Google SRE', 'Systems Performance'], cross_skills: 'Phản biện hiệu năng & resilience', enabled: true },
+    { id: 'linh', name: 'Linh', title: 'Frontend', agent_type: 'team-frontend', default_tier: 'flash', mode: 'read-write', color: '#ec4899', specialty: 'UX/UI Material 3, Responsive Desktop/Mobile, DRY & i18n', books: ['Design of Everyday Things', 'Refactoring UI', 'Patterns.dev'], cross_skills: 'Phản biện API contract & UX', enabled: true },
+    { id: 'khanh', name: 'Khanh', title: 'QA', agent_type: 'team-qa', default_tier: 'flash', mode: 'read-write', color: '#10b981', specialty: 'Test Happy/Edge/Error, Automation, Build Gate & Zero-Trash', books: ['Unit Testing (Khorikov)', 'Legacy Code (Feathers)'], cross_skills: 'Shift-Left phản biện Testability', enabled: true },
+    { id: 'hung', name: 'Hung', title: 'Reviewer', agent_type: 'team-reviewer', default_tier: 'pro', mode: 'read-only', color: '#f59e0b', specialty: 'Review diff 6 tầng, Red-Team kiến trúc & bảo mật OWASP/STRIDE', books: ['OWASP Top 10', 'Threat Modeling (STRIDE)', 'SE at Google'], cross_skills: 'Red-Team bảo mật & concurrency', enabled: true }
   ],
   presets: [
+    { id: 'debate', name: 'Architecture Debate', subtitle: 'Khởi tạo nền móng & tranh biện RFC', member_ids: ['an', 'minh', 'long', 'linh', 'khanh', 'hung'], flow: 'Minh đề xuất -> Team phản biện -> An chốt ADR' },
     { id: 'fullstack', name: 'Feature Fullstack', subtitle: 'Tính năng mới Backend + Frontend', member_ids: ['an', 'minh', 'long', 'linh', 'khanh', 'hung'], flow: 'Minh -> Long + Linh -> Khanh -> Hung' },
     { id: 'bughunt', name: 'Deep Bug Hunt', subtitle: 'Truy gốc lỗi khó, crash, log dài', member_ids: ['an', 'tin', 'long', 'khanh'], flow: 'Tin -> Long -> Khanh' },
     { id: 'uiux', name: 'UI/UX Polish', subtitle: 'Giao diện Desktop & Mobile DRY', member_ids: ['an', 'linh', 'hung'], flow: 'Linh -> Hung' },
@@ -34,6 +35,26 @@ function loadTeamState() {
     if (fs.existsSync(CONFIG_PATH)) {
       const parsed = JSON.parse(fs.readFileSync(CONFIG_PATH, 'utf8'));
       if (parsed && Array.isArray(parsed.members)) {
+        const defaultsById = Object.fromEntries(DEFAULT_STATE.members.map((m) => [m.id, m]));
+        let changed = parsed.version !== '2.1.0';
+        for (const m of parsed.members) {
+          const d = defaultsById[m.id];
+          if (d) {
+            if (!m.books) { m.books = [...d.books]; changed = true; }
+            if (!m.cross_skills) { m.cross_skills = d.cross_skills; changed = true; }
+          }
+        }
+        const existingPresetIds = new Set((parsed.presets || []).map((p) => p.id));
+        for (const dp of DEFAULT_STATE.presets) {
+          if (!existingPresetIds.has(dp.id)) {
+            parsed.presets = [dp, ...(parsed.presets || [])];
+            changed = true;
+          }
+        }
+        if (changed) {
+          parsed.version = '2.1.0';
+          saveTeamState(parsed);
+        }
         return parsed;
       }
     }

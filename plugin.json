@@ -1,8 +1,8 @@
 {
   "name": "ai-engineering-team",
   "displayName": "AI Engineering Team & Smart Router",
-  "version": "2.0.0",
-  "description": "Đội ngũ AI kỹ thuật có tên riêng (An, Minh, Tin, Long, Linh, Khanh, Hung) kèm MCP Server, bảng điều phối UI trực quan và Sidebar cho Antigravity IDE.",
+  "version": "2.1.0",
+  "description": "Đội ngũ AI kỹ thuật có tên riêng (An, Minh, Tin, Long, Linh, Khanh, Hung) được đào tạo nền móng sách kinh điển, tranh biện chéo RFC/ADR, kèm MCP App UI và Sidebar cho Antigravity IDE.",
   "logo": "assets/logo.svg",
   "repository": "https://github.com/nvnguyen359/ai-engineering-team",
   "suggestedPrompts": [

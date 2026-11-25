@@ -2,7 +2,7 @@
   "name": "ai-engineering-team-sidebar",
   "displayName": "AI Engineering Team",
   "description": "Bảng UI trực quan trên thanh Sidebar cho đội ngũ AI kỹ thuật (An, Minh, Tin, Long, Linh, Khanh, Hung) đồng bộ với Antigravity Plugin & MCP Server.",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "publisher": "nvnguyen359",
   "repository": {
     "type": "git",

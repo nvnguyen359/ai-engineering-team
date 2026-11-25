@@ -333,6 +333,8 @@
             </select>
           </div>
           <div class="m-spec">${m.specialty}</div>
+          ${m.books && m.books.length ? `<div class="m-spec" style="color:#60a5fa;font-size:10px;">📚 ${m.books.join(' · ')}</div>` : ''}
+          ${m.cross_skills ? `<div class="m-spec" style="color:#34d399;font-size:10px;">⚡ ${m.cross_skills}</div>` : ''}
         `;
 
         const left = card.querySelector(`[data-toggle="${m.id}"]`);

@@ -1,10 +1,11 @@
-# AI Engineering Team & Smart Router (`v2.0.0`)
+# AI Engineering Team & Smart Router (`v2.1.0`)
 
-Gói tích hợp toàn diện cho **Google Antigravity** và **Antigravity IDE** — dùng chung cho **mọi dự án trên máy**:
-- **6 Subagent chuyên biệt có tên riêng** (`Minh`, `Tin`, `Long`, `Linh`, `Khanh`, `Hung`) + Tech Lead (`An`).
-- **Tự động phân bổ tầng AI** (`flash_lite` / `flash` / `pro` / `inherit`) và hiển thị dòng trạng thái phân bổ 1 dòng siêu gọn cho tác vụ phức tạp.
+Gói tích hợp toàn diện cho **Google Antigravity** và **Antigravity IDE** — nền móng kỹ thuật dùng chung cho **mọi dự án công nghệ trên máy**:
+- **6 Subagent chuyên biệt có tên riêng** (`Minh`, `Tin`, `Long`, `Linh`, `Khanh`, `Hung`) + Tech Lead (`An`), được đào tạo bài bản theo **tủ sách kinh điển** (*Pragmatic Programmer, Clean Architecture, DDIA, Release It!, Google SRE, Architecture: The Hard Parts, DDD, Design of Everyday Things, Refactoring UI, Unit Testing by Khorikov, OWASP/STRIDE, Debugging 9 Rules*) và **kinh nghiệm thực chiến đa nền tảng** (Web, Desktop `.exe`, Mobile Android, Chrome Extension, Realtime/Media).
+- **Khung Tranh Biện Chéo & Làm Chéo (T-Shaped RFC/ADR Debate)**: Các thành viên có kiến thức ngoài luồng để phản biện thẳng thắn đa góc nhìn (Kiến trúc ↔ Hiệu năng ↔ UX/Contract ↔ Testability ↔ Red-Team Bảo mật) trước khi chốt quyết định.
+- **Tự động phân bổ tầng AI** (`flash_lite` / `flash` / `pro` / `inherit`), đồng bộ cấu hình tầng từ Sidebar qua `get_team_roster` và hiển thị dòng trạng thái 1 dòng siêu gọn cho tác vụ phức tạp.
 - **MCP Server + MCP App UI (`ui://ai-team/dashboard.html`)**: Mở bảng điều phối trực quan ngay trong chat, thanh phụ (Side Pane `+`) và Sidebar của Antigravity 2.0.
-- **Antigravity IDE Sidebar Extension (`.vsix`)**: Gắn trực tiếp icon **AI Team** lên thanh **Activity Bar bên trái** của Antigravity IDE để theo dõi đội ngũ, đổi tầng model và tạo lệnh gọi nhóm trong 1 click.
+- **Antigravity IDE Sidebar Extension (`.vsix`)**: Gắn trực tiếp icon **AI Team** lên thanh **Activity Bar bên trái** của Antigravity IDE.
 
 ---
 

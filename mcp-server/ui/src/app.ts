@@ -13,6 +13,8 @@ interface Member {
   mode: string;
   color: string;
   specialty: string;
+  books?: string[];
+  cross_skills?: string;
   enabled: boolean;
 }
 
@@ -124,6 +126,8 @@ function render(): void {
         <span class="mode-chip">${modeLabel}</span>
       </div>
       <div class="member-spec">${m.specialty}</div>
+      ${m.books && m.books.length ? `<div class="member-books">📚 ${m.books.join(' · ')}</div>` : ''}
+      ${m.cross_skills ? `<div class="member-cross">⚡ Chéo: ${m.cross_skills}</div>` : ''}
       <div class="member-controls">
         <label class="squad-check">
           <input type="checkbox" data-check="${m.id}" ${inSquad ? 'checked' : ''} ${!m.enabled ? 'disabled' : ''} />

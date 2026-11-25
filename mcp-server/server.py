@@ -23,7 +23,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "inherit",
         "mode": "coordinator",
         "color": "#0ea5e9",
-        "specialty": "Điều phối, phân rã yêu cầu, chọn tổ hợp nhóm & tổng hợp kết quả",
+        "specialty": "Điều phối, phân rã yêu cầu, tổng hợp tranh biện ADR/RFC & chốt quyết định",
+        "books": ["Pragmatic Programmer", "SE at Google", "Philosophy of SW Design"],
+        "cross_skills": "Cân bằng YAGNI/KISS, chi phí quota & rủi ro giao hàng",
         "enabled": True,
     },
     {
@@ -34,7 +36,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "pro",
         "mode": "read-only",
         "color": "#8b5cf6",
-        "specialty": "Thiết kế kiến trúc, hợp đồng API, đánh giá trade-offs & kế hoạch triển khai",
+        "specialty": "Kiến trúc nền móng, Clean Architecture, Contract đa nền tảng & Trade-off ADR",
+        "books": ["Clean Architecture", "DDIA", "Architecture: Hard Parts", "DDD"],
+        "cross_skills": "Phản biện Coupling, Parity Desktop/Mobile & Testability",
         "enabled": True,
     },
     {
@@ -45,7 +49,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "flash_lite",
         "mode": "read-only",
         "color": "#14b8a6",
-        "specialty": "Quét codebase rộng, đọc log dài, khoanh vùng file & dòng siêu nhanh",
+        "specialty": "Map-First Discovery, phân tích log dài & lập bản đồ ảnh hưởng xuyên tầng",
+        "books": ["Debugging (9 Rules)", "Pragmatic Programmer"],
+        "cross_skills": "Phản biện giả định của team bằng bằng chứng file:line thật",
         "enabled": True,
     },
     {
@@ -56,7 +62,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "pro",
         "mode": "read-write",
         "color": "#3b82f6",
-        "specialty": "API, Database, Worker, Concurrency, Media/System, tối ưu hiệu năng",
+        "specialty": "API, DB/Migration, Concurrency, Streaming, SRE & Dual-Target (.exe/Cloud)",
+        "books": ["DDIA", "Release It!", "Google SRE", "Systems Performance"],
+        "cross_skills": "Phản biện bottleneck hiệu năng, tài nguyên & độ bền production",
         "enabled": True,
     },
     {
@@ -67,7 +75,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "flash",
         "mode": "read-write",
         "color": "#ec4899",
-        "specialty": "UX/UI hiện đại, Responsive Desktop & Mobile, Component DRY, i18n",
+        "specialty": "UX/UI Material 3, Responsive Desktop/Mobile, DRY Components, Signals & i18n",
+        "books": ["Design of Everyday Things", "Refactoring UI", "Patterns.dev"],
+        "cross_skills": "Phản biện API contract, Loading/Empty/Error UX & độ mượt hiển thị",
         "enabled": True,
     },
     {
@@ -78,7 +88,9 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "flash",
         "mode": "read-write",
         "color": "#10b981",
-        "specialty": "Automated test, kiểm tra build/compile, vệ sinh thư mục test, chống hồi quy",
+        "specialty": "Chiến lược test Happy/Edge/Error, Automation, Build Gate & Zero-Trash Hygiene",
+        "books": ["Unit Testing (Khorikov)", "Legacy Code (Feathers)"],
+        "cross_skills": "Shift-Left phản biện Testability, race condition & edge-cases từ sớm",
         "enabled": True,
     },
     {
@@ -89,12 +101,22 @@ DEFAULT_MEMBERS: List[Dict[str, Any]] = [
         "default_tier": "pro",
         "mode": "read-only",
         "color": "#f59e0b",
-        "specialty": "Review diff độc lập, soi race condition, memory leak, bảo mật & SOLID",
+        "specialty": "Review diff độc lập 6 tầng, Red-Team kiến trúc, bảo mật OWASP/STRIDE & leak",
+        "books": ["OWASP Top 10", "Threat Modeling (STRIDE)", "SE at Google"],
+        "cross_skills": "Red-Team tìm điểm gãy bảo mật, concurrency & tương thích ngược",
         "enabled": True,
     },
 ]
 
 DEFAULT_PRESETS: List[Dict[str, Any]] = [
+    {
+        "id": "debate",
+        "name": "Architecture Debate (RFC)",
+        "subtitle": "Khởi tạo nền móng & tranh biện chéo đa góc nhìn",
+        "keywords": ["kiến trúc", "nền móng", "tranh luận", "tranh biện", "rfc", "adr", "dự án mới", "thiết kế hệ thống"],
+        "member_ids": ["an", "minh", "long", "linh", "khanh", "hung"],
+        "flow": "Minh đề xuất 2 phương án -> Long/Linh/Khanh/Hung phản biện chéo -> An chốt Mini-ADR",
+    },
     {
         "id": "fullstack",
         "name": "Feature Fullstack",
@@ -165,11 +187,32 @@ def load_state() -> Dict[str, Any]:
         try:
             raw = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
             if isinstance(raw, dict) and isinstance(raw.get("members"), list):
+                # Non-destructive upgrade: hydrate new v2.1.0 fields (books, cross_skills, debate preset)
+                # while keeping user's custom model tiers and enabled flags intact.
+                defaults_by_id = {m["id"]: m for m in DEFAULT_MEMBERS}
+                changed = raw.get("version") != "2.1.0"
+                for m in raw["members"]:
+                    d = defaults_by_id.get(m.get("id"))
+                    if d:
+                        if "books" not in m:
+                            m["books"] = copy.deepcopy(d["books"])
+                            changed = True
+                        if "cross_skills" not in m:
+                            m["cross_skills"] = d["cross_skills"]
+                            changed = True
+                existing_presets = {p.get("id") for p in raw.get("presets", [])}
+                for dp in DEFAULT_PRESETS:
+                    if dp["id"] not in existing_presets:
+                        raw.setdefault("presets", []).insert(0, copy.deepcopy(dp))
+                        changed = True
+                if changed:
+                    raw["version"] = "2.1.0"
+                    save_state(raw)
                 return raw
         except Exception:
             pass
     state = {
-        "version": "2.0.0",
+        "version": "2.1.0",
         "members": copy.deepcopy(DEFAULT_MEMBERS),
         "presets": copy.deepcopy(DEFAULT_PRESETS),
         "recent_dispatches": [],
