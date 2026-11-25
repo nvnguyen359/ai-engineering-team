@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "ai-team-mcp": {
+      "command": "python",
+      "args": [
+        "${PLUGIN_ROOT}/mcp-server/server.py",
+        "--plugin-root",
+        "${PLUGIN_ROOT}",
+        "--data-dir",
+        "${PLUGIN_DATA}"
+      ]
+    }
+  }
+}

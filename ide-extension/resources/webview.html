@@ -1,0 +1,392 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Engineering Team</title>
+  <style>
+    :root {
+      --bg: var(--vscode-sideBar-background, #18181b);
+      --card: var(--vscode-editor-background, #1e1e24);
+      --border: var(--vscode-panel-border, rgba(148, 163, 184, 0.2));
+      --text: var(--vscode-foreground, #e4e4e7);
+      --muted: var(--vscode-descriptionForeground, #a1a1aa);
+      --btn-bg: var(--vscode-button-background, #10b981);
+      --btn-fg: var(--vscode-button-foreground, #ffffff);
+      --input-bg: var(--vscode-input-background, #121216);
+      --input-border: var(--vscode-input-border, rgba(148, 163, 184, 0.25));
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 10px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--vscode-font-family, system-ui, -apple-system, 'Segoe UI', sans-serif);
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .status-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 9px;
+    }
+
+    .badges { display: flex; gap: 5px; flex-wrap: wrap; }
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+    }
+    .badge-ok { background: rgba(16, 185, 129, 0.14); color: #34d399; border-color: rgba(16, 185, 129, 0.35); }
+    .badge-warn { background: rgba(245, 158, 11, 0.14); color: #fbbf24; border-color: rgba(245, 158, 11, 0.35); }
+
+    .section-title {
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 5px;
+    }
+
+    .preset-list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(125px, 1fr));
+      gap: 6px;
+    }
+
+    .preset-btn {
+      text-align: left;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      padding: 7px 8px;
+      color: var(--text);
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+    .preset-btn:hover { border-color: #3b82f6; }
+    .preset-btn.active {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.12);
+    }
+    .preset-title { font-weight: 750; font-size: 11.5px; }
+    .preset-desc { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .member-list {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    body.wide .member-list {
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    }
+
+    .member-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-left: 3px solid var(--mc, #3b82f6);
+      border-radius: 9px;
+      padding: 7px 8px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+    .member-card.selected {
+      border-color: rgba(16, 185, 129, 0.55);
+      border-left-color: var(--mc, #10b981);
+      box-shadow: 0 0 0 1px rgba(16, 185, 129, 0.25);
+    }
+
+    .m-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+    }
+    .m-left {
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      min-width: 0;
+      cursor: pointer;
+      flex: 1;
+    }
+    .avatar {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--mc, #3b82f6);
+      color: #fff;
+      font-weight: 800;
+      font-size: 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .m-name {
+      font-weight: 750;
+      font-size: 12px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .m-spec {
+      font-size: 10.5px;
+      color: var(--muted);
+    }
+
+    select.tier {
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--input-border);
+      border-radius: 6px;
+      padding: 2px 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    select.tier-pro { color: #c084fc; border-color: rgba(192, 132, 252, 0.5); }
+    select.tier-flash { color: #60a5fa; border-color: rgba(96, 165, 250, 0.5); }
+    select.tier-flash_lite { color: #2dd4bf; border-color: rgba(45, 212, 191, 0.5); }
+    select.tier-inherit { color: #fbbf24; border-color: rgba(251, 191, 36, 0.5); }
+
+    .banner-preview {
+      background: var(--input-bg);
+      border: 1px solid var(--border);
+      border-left: 3px solid #10b981;
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 10.5px;
+      word-break: break-word;
+    }
+
+    textarea {
+      width: 100%;
+      background: var(--input-bg);
+      color: var(--text);
+      border: 1px solid var(--input-border);
+      border-radius: 8px;
+      padding: 7px 8px;
+      font-family: inherit;
+      font-size: 11.5px;
+      resize: vertical;
+    }
+
+    .actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .btn {
+      flex: 1;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      background: var(--card);
+      color: var(--text);
+    }
+    .btn-primary {
+      background: var(--btn-bg);
+      color: var(--btn-fg);
+      border-color: transparent;
+    }
+    .btn-icon {
+      flex: 0 0 auto;
+      padding: 3px 7px;
+      font-size: 10.5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="status-bar">
+      <div class="badges">
+        <span id="pluginBadge" class="badge badge-ok">● Plugin</span>
+        <span id="mcpBadge" class="badge badge-ok">● MCP</span>
+      </div>
+      <div style="display:flex;gap:4px;">
+        <button id="btnExpand" class="btn btn-icon" title="Mở rộng toàn màn hình">⤢</button>
+        <button id="btnFolder" class="btn btn-icon" title="Mở thư mục Plugin">📁</button>
+        <button id="btnReset" class="btn btn-icon" title="Khôi phục mặc định">↺</button>
+      </div>
+    </div>
+
+    <div>
+      <div class="section-title"><span>Tổ hợp đội hình (Presets)</span></div>
+      <div id="presetList" class="preset-list"></div>
+    </div>
+
+    <div>
+      <div class="section-title">
+        <span>Đội ngũ &amp; Tầng Model</span>
+        <span id="countLabel">0/7</span>
+      </div>
+      <div id="memberList" class="member-list"></div>
+    </div>
+
+    <div>
+      <div class="section-title"><span>Lệnh gọi đội hình</span></div>
+      <div id="bannerPreview" class="banner-preview"></div>
+      <textarea id="taskBox" rows="2" style="margin-top:6px;" placeholder="Nhập yêu cầu công việc để tạo lệnh giao việc..."></textarea>
+      <div class="actions" style="margin-top:6px;">
+        <button id="btnCopy" class="btn btn-primary">📋 Copy lệnh giao việc</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const vscode = acquireVsCodeApi();
+    const isWide = __IS_WIDE__;
+    if (isWide) document.body.classList.add('wide');
+
+    const VERBS = {
+      an: 'điều phối',
+      minh: 'thiết kế kiến trúc',
+      tin: 'quét codebase & log',
+      long: 'xử lý backend',
+      linh: 'thiết kế UI',
+      khanh: 'kiểm thử & build',
+      hung: 'review & bảo mật'
+    };
+
+    let teamState = { members: [], presets: [] };
+    let activePreset = 'fullstack';
+    let selectedIds = new Set(['an', 'minh', 'long', 'linh', 'khanh', 'hung']);
+
+    function getChosen() {
+      return teamState.members.filter((m) => selectedIds.has(m.id) && m.enabled !== false);
+    }
+
+    function buildBanner() {
+      const chosen = getChosen();
+      if (!chosen.length) return '> 🤖 **Đội hình AI:** Chưa chọn thành viên';
+      return '> 🤖 **Đội hình AI:** ' + chosen.map((m) =>
+        `\`${m.name} · ${m.title}\` (\`${m.default_tier}\`) ${VERBS[m.id] || 'thực thi'}`
+      ).join(' · ');
+    }
+
+    function render() {
+      const presetEl = document.getElementById('presetList');
+      presetEl.innerHTML = '';
+      for (const p of teamState.presets) {
+        const b = document.createElement('button');
+        b.className = 'preset-btn' + (activePreset === p.id ? ' active' : '');
+        b.innerHTML = `<div class="preset-title">${p.name}</div><div class="preset-desc">${p.subtitle}</div>`;
+        b.onclick = () => {
+          activePreset = p.id;
+          selectedIds = new Set(p.member_ids);
+          render();
+        };
+        presetEl.appendChild(b);
+      }
+
+      const memberEl = document.getElementById('memberList');
+      memberEl.innerHTML = '';
+      for (const m of teamState.members) {
+        const isSel = selectedIds.has(m.id);
+        const card = document.createElement('div');
+        card.className = 'member-card' + (isSel ? ' selected' : '');
+        card.style.setProperty('--mc', m.color || '#3b82f6');
+        card.innerHTML = `
+          <div class="m-row">
+            <div class="m-left" data-toggle="${m.id}">
+              <input type="checkbox" ${isSel ? 'checked' : ''} />
+              <span class="avatar">${m.name.slice(0, 2).toUpperCase()}</span>
+              <span class="m-name">${m.name} · ${m.title}</span>
+            </div>
+            <select class="tier tier-${m.default_tier}" data-tier="${m.id}">
+              <option value="pro" ${m.default_tier === 'pro' ? 'selected' : ''}>pro</option>
+              <option value="flash" ${m.default_tier === 'flash' ? 'selected' : ''}>flash</option>
+              <option value="flash_lite" ${m.default_tier === 'flash_lite' ? 'selected' : ''}>flash_lite</option>
+              <option value="inherit" ${m.default_tier === 'inherit' ? 'selected' : ''}>inherit</option>
+            </select>
+          </div>
+          <div class="m-spec">${m.specialty}</div>
+        `;
+
+        const left = card.querySelector(`[data-toggle="${m.id}"]`);
+        left.onclick = () => {
+          activePreset = 'custom';
+          if (selectedIds.has(m.id)) selectedIds.delete(m.id);
+          else selectedIds.add(m.id);
+          render();
+        };
+
+        const sel = card.querySelector(`select[data-tier="${m.id}"]`);
+        sel.onchange = () => {
+          m.default_tier = sel.value;
+          render();
+          vscode.postMessage({ type: 'updateMember', memberId: m.id, defaultTier: sel.value });
+        };
+
+        memberEl.appendChild(card);
+      }
+
+      document.getElementById('countLabel').textContent = `${getChosen().length}/${teamState.members.length}`;
+      document.getElementById('bannerPreview').textContent = buildBanner();
+    }
+
+    document.getElementById('btnCopy').onclick = () => {
+      const chosen = getChosen();
+      const list = chosen.map((m) => `${m.name} (${m.title} - ${m.default_tier})`).join(', ');
+      const task = document.getElementById('taskBox').value.trim();
+      const text = task
+        ? `Triệu tập đội ngũ AI: ${list}.\nYêu cầu: ${task}`
+        : `Triệu tập đội ngũ AI: ${list}.`;
+      vscode.postMessage({ type: 'copyPrompt', text });
+    };
+
+    document.getElementById('btnExpand').onclick = () => vscode.postMessage({ type: 'openFullPanel' });
+    document.getElementById('btnFolder').onclick = () => vscode.postMessage({ type: 'openPluginFolder' });
+    document.getElementById('btnReset').onclick = () => vscode.postMessage({ type: 'resetDefaults' });
+
+    window.addEventListener('message', (event) => {
+      const msg = event.data;
+      if (msg.type === 'state') {
+        teamState = msg.state;
+        const st = msg.status || {};
+        const pb = document.getElementById('pluginBadge');
+        pb.className = 'badge ' + (st.pluginInstalled ? 'badge-ok' : 'badge-warn');
+        pb.textContent = st.pluginInstalled ? '● Plugin Active' : '○ Chưa cài Plugin';
+        const mb = document.getElementById('mcpBadge');
+        mb.className = 'badge ' + (st.mcpReady ? 'badge-ok' : 'badge-warn');
+        mb.textContent = st.mcpReady ? '● MCP Ready' : '○ Chưa bật MCP';
+        render();
+      }
+    });
+
+    vscode.postMessage({ type: 'ready' });
+  </script>
+</body>
+</html>

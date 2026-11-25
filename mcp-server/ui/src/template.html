@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>AI Engineering Team Dashboard</title>
+  <style>/*__INLINE_CSS__*/</style>
+</head>
+<body>
+  <div id="root" class="shell">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-badge">AI</div>
+        <div>
+          <h1>AI Engineering Team</h1>
+          <p class="subtitle">Phân chức danh · Tổ hợp nhóm · Phân bổ tầng Model</p>
+        </div>
+      </div>
+      <div class="top-actions">
+        <span id="statusPill" class="pill pill-live">● MCP Ready</span>
+        <button id="btnReset" class="btn btn-ghost" title="Khôi phục mặc định">↺ Mặc định</button>
+      </div>
+    </header>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>1. Tổ hợp đội hình nhanh (Squad Presets)</h2>
+        <span class="hint">Chọn nhóm theo loại yêu cầu hoặc bấm từng thành viên bên dưới để tự ghép</span>
+      </div>
+      <div id="presetGrid" class="preset-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="section-head">
+        <h2>2. Danh bạ đội ngũ &amp; Phân bổ tầng AI</h2>
+        <span id="selectedSummary" class="pill pill-soft">0 thành viên</span>
+      </div>
+      <div id="memberGrid" class="member-grid"></div>
+    </section>
+
+    <section class="panel dispatch-panel">
+      <div class="section-head">
+        <h2>3. Lệnh giao việc cho đội hình đang chọn</h2>
+        <span id="tierSummary" class="hint"></span>
+      </div>
+      <div class="banner-box" id="bannerPreview"></div>
+      <textarea id="taskInput" rows="2" placeholder="Nhập yêu cầu công việc (VD: Điều tra bug mất kết nối camera và viết regression test)..."></textarea>
+      <div class="dispatch-actions">
+        <button id="btnCopy" class="btn btn-secondary">📋 Sao chép lệnh</button>
+        <button id="btnAttach" class="btn btn-secondary hidden">📎 Đính kèm vào chat</button>
+        <button id="btnSend" class="btn btn-primary hidden">🚀 Giao việc ngay</button>
+      </div>
+      <div id="toast" class="toast hidden"></div>
+    </section>
+  </div>
+  <script type="module">/*__INLINE_JS__*/</script>
+</body>
+</html>

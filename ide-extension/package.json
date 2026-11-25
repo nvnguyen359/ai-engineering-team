@@ -1,0 +1,73 @@
+{
+  "name": "ai-engineering-team-sidebar",
+  "displayName": "AI Engineering Team",
+  "description": "Bảng UI trực quan trên thanh Sidebar cho đội ngũ AI kỹ thuật (An, Minh, Tin, Long, Linh, Khanh, Hung) đồng bộ với Antigravity Plugin & MCP Server.",
+  "version": "2.0.0",
+  "publisher": "nvnguyen359",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/nvnguyen359/ai-engineering-team"
+  },
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onView:aiTeamDashboardView",
+    "onCommand:aiTeam.openFullPanel"
+  ],
+  "main": "./extension.js",
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "ai-team-sidebar",
+          "title": "AI Team",
+          "icon": "resources/sidebar-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "ai-team-sidebar": [
+        {
+          "type": "webview",
+          "id": "aiTeamDashboardView",
+          "name": "Đội Ngũ AI & Phân Tầng"
+        }
+      ]
+    },
+    "commands": [
+      {
+        "command": "aiTeam.refresh",
+        "title": "AI Team: Làm mới dữ liệu",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "aiTeam.openFullPanel",
+        "title": "AI Team: Mở bảng toàn màn hình",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "aiTeam.openPluginFolder",
+        "title": "AI Team: Mở thư mục Plugin",
+        "icon": "$(folder-opened)"
+      }
+    ],
+    "menus": {
+      "view/title": [
+        {
+          "command": "aiTeam.openFullPanel",
+          "when": "view == aiTeamDashboardView",
+          "group": "navigation@1"
+        },
+        {
+          "command": "aiTeam.refresh",
+          "when": "view == aiTeamDashboardView",
+          "group": "navigation@2"
+        }
+      ]
+    }
+  }
+}
